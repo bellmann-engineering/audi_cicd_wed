@@ -20,7 +20,7 @@ jobs:
         run: cppcheck --enable=style,warning,performance --error-exitcode=1 main.cpp
 
       - name: clang-tidy
-        run:  clang-tidy main.cpp -warnings-as-errors='*' -- -std=c++17
+        run:  clang-tidy main.cpp -checks='bugprone-*,performance-*,readability-*,modernize-*' -warnings-as-errors='*' -- -std=c++17
 
       - name: Build
         run: g++ main.cpp -o programm -Wall
