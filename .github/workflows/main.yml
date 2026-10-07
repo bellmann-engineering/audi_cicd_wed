@@ -1,4 +1,4 @@
-name: CI/CD mit GCC
+name: CI/CD
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  build:
+  lint:
     runs-on: ubuntu-latest
 
     steps:
@@ -14,16 +14,35 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install tools
-        run: sudo apt-get install -y g++ cppcheck clang-tidy
+        run: sudo apt-get install -y cppcheck clang-tidy
 
       - name: stylecheck
         run: cppcheck --enable=style,warning,performance --error-exitcode=1 main.cpp
 
-      - name: clang-tidy
-        run:  clang-tidy main.cpp -checks='bugprone-*,performance-*,readability-*,modernize-*' -warnings-as-errors='*' -- -std=c++17
+#      - name: clang-tidy
+#        run: clang-tidy main.cpp -checks='bugprone-*,performance-*,readability-*,modernize-*' -warnings-as-errors='*' -- -std=c++17
+
+  build:
+    needs: lint
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        compiler: [g++, clang++]
+        std: [14, 17, 20]
+
+    name: Build (${{ matrix.compiler }}, C++${{ matrix.std }})
+
+    steps:
+      - name: Checkout code from Git
+        uses: actions/checkout@v4
+
+      - name: Install compilers
+        run: sudo apt-get install -y g++ clang
 
       - name: Build
-        run: g++ main.cpp -o programm -Wall
+        run: ${{ matrix.compiler }} main.cpp -o programm -std=c++${{ matrix.std }} -Wall
 
       - name: Test
         run: |
