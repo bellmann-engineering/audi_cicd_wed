@@ -1,0 +1,20 @@
+name: CI/CD mit GCC
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code from Git
+        uses: actions/checkout@v2
+
+      - name: Install GCC
+        run: sudo apt-get install -y g++
+
+      - name: Build
+        run: g++ main.cpp -o programm -Wall
