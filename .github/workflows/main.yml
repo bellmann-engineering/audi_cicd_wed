@@ -92,3 +92,13 @@ jobs:
         with:
           name: programm
           path: programm
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.0.${{ github.run_number }}
+          name: Release v1.0.${{ github.run_number }}
+          body: |
+            Erster Release mit Unit Tests.
+            Binary für Linux (x64).
+          files: programm
