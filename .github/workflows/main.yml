@@ -41,6 +41,34 @@ jobs:
         run: g++ test_calc.cpp -o unittests -std=c++17 -Wall -lgtest -lgtest_main -pthread && ./unittests
 
 
+  coverage:
+    needs: unittest
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code from Git
+        uses: actions/checkout@v4
+
+      - name: Install tools
+        run: sudo apt-get install -y g++ libgtest-dev lcov
+
+      - name: Build and run tests with coverage
+        run: |
+          g++ test_calc.cpp -o unittests -std=c++17 -O0 --coverage -lgtest -lgtest_main -pthread
+          ./unittests
+
+      - name: Create coverage report
+        run: |
+          lcov --capture --directory . --output-file coverage.info
+          lcov --remove coverage.info '/usr/*' --output-file coverage.info
+          lcov --list coverage.info
+          genhtml coverage.info --output-directory coverage-report
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage-report
 
 
   build:
@@ -77,7 +105,7 @@ jobs:
 
 
   deploy:
-    needs: build
+    needs: [build, coverage]
     runs-on: ubuntu-latest
     permissions:
       contents: write
