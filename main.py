@@ -7,7 +7,7 @@ def greet(name: str = "") -> str:
 
 def add(a: int, b: int) -> int:
     """Addiert zwei Zahlen."""
-    return a + b
+    return a + b +1 
 
 
 if __name__ == "__main__":
