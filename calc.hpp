@@ -10,5 +10,5 @@ inline std::string greet(const std::string& name = "")
 
 inline int add(int a, int b)
 {
-    return a + b + 1;
+    return a + b;
 }
