@@ -74,3 +74,21 @@ jobs:
             echo "Test fehlgeschlagen: '$OUTPUT'"
             exit 1
           fi
+
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code from Git
+        uses: actions/checkout@v4
+
+      - name: Build release binary
+        run: g++ main.cpp -o programm -std=c++17 -O2
+
+      - name: Upload binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: programm
+          path: programm
